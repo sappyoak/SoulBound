@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.sappyoak.soulbound.binder.Binder;
 import com.sappyoak.soulbound.config.Messages;
 import com.sappyoak.soulbound.config.Settings;
+import com.sappyoak.soulbound.listeners.ItemProtectionListener;
 
 public class SoulBound extends JavaPlugin {
     private Binder binder;
@@ -16,12 +17,15 @@ public class SoulBound extends JavaPlugin {
         binder = new Binder(this);
         messages = new Messages(this);
         settings = new Settings(this);
+
+        initializeConfiguration();
+        setupListeners();
     }
 
     public Binder getBinder() {
         return binder;
     }
-    
+
     public Messages getMessages() {
         return messages;
     }
@@ -37,5 +41,9 @@ public class SoulBound extends JavaPlugin {
 
         settings.load();
         messages.load();
+    }
+
+    public void setupListeners() {
+        getServer().getPluginManager().registerEvents(new ItemProtectionListener(this), this);
     }
 }

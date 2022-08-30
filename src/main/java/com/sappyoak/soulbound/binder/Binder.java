@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.sappyoak.soulbound.SoulBound;
+import com.sappyoak.soulbound.config.Permissions;
 
 public final class Binder {
     private final NamespacedKey bindKey;
@@ -43,6 +44,10 @@ public final class Binder {
         return AccessLevel.ALLOW;
     }
 
+    public boolean canIgnoreBinding(Player player) {
+        return player.hasPermission(Permissions.ADMIN) || player.hasPermission(Permissions.BYPASS_RULES);
+    }
+
     public boolean isBoundToPlayer(ItemStack item) {
         return Container.readContainerTag(item, bindKey).isPresent();
     }
@@ -64,7 +69,7 @@ public final class Binder {
     }
 
     public ItemStack bindToGroup(ItemStack item, String groupPerm) {
-        return Container.writeContainerTag(item, groupPerm, groupBindKey);
+        return Container.writeContainerTag(item, Permissions.GROUP_BIND_ROOT + groupPerm, groupBindKey);
     }
 
     public ItemStack removeBinds(ItemStack item) {
