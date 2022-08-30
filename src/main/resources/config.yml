@@ -1,0 +1,18 @@
+# The Lore that will be added to the soulbound item. %username% placeholder replaced with target username
+loreText: "&9Soul bound to %username%"
+debug: false
+
+# Messages | use '&' for color codes
+messages:
+  prefix: "&8[&bSoul&3Bound&8]&r"
+
+  deny: "&9 This item is soul bound to another player"
+  denyGroup: "&9 This item is soul bound"
+
+  errorEmptyMainHand: "You must be holding an item in your main hand"
+  errorAlreadyBound: "This item is already soul bound"
+  errorNotBound: "This item is not bound to anyone currently"
+  errorNoSuchPlayer: "No such player found online"
+
+  success: "&a Soul bind complete"
+  successUnbind: "&a Soul bind broken"  
