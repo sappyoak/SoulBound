@@ -1,5 +1,6 @@
 package com.sappyoak.soulbound.listeners;
 
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -47,6 +48,7 @@ public class ItemProtectionListener implements Listener {
                 AccessLevel access = binder.getAccessLevel(event.getCurrentItem(), player);
                 if (access != AccessLevel.ALLOW) {
                     event.setCancelled(true);
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 1F);
                     player.sendMessage(access == AccessLevel.DENY_GROUP ? plugin.getMessages().getDenyGroup() : plugin.getMessages().getDeny());
                 }
             }

@@ -1,0 +1,28 @@
+name: SoulBound
+version: ${project.version}
+main: com.sappyoak.soulbound.SoulBound
+api-version: 1.19
+authors: [Sappyoak]
+description: Bind items so they can only be held and used by a particular player
+
+commands:
+  soulbind:
+    usage: soulbind <playerName>
+  sbind:
+    usage: soulbind <playerName>
+  soulunbind:
+    usage: soulunbind <playerName>
+  sunbind:
+    usage: sunbind <playerName>
+  sb-reload:
+    usage: sb-reload
+  sb-debug:
+    usage: sb-debug
+
+permissions:
+  soulbound.admin:
+    description: Allows a user to bind and unbind items to a character
+    default: op
+  soulbound.bypass:
+    description: Allows a user to bypass the soul bound rules
+    default: op
