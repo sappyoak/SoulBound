@@ -63,7 +63,7 @@ public class Debugger {
     public boolean hasPlayerDebug(Player player) {
         return playersEnabledFor.containsKey(player.getUniqueId());
     }
-    
+
     public void removePlayerDebug(Player player) {
         playersEnabledFor.remove(player.getUniqueId());
     }
@@ -78,6 +78,8 @@ public class Debugger {
         }
         
         logger.log(Level.SEVERE, msg, exception);
+        plugin.getLogger().log(Level.SEVERE, msg, exception);
+
         for (Player player : playersEnabledFor.values()) {
             player.sendMessage(plugin.getMessages().applyPrefix("[Debug]: " + msg));
         }        
@@ -89,6 +91,7 @@ public class Debugger {
         }
 
         logger.log(level, msg);
+        plugin.getLogger().log(level, msg);
         for (Player player : playersEnabledFor.values()) {
             player.sendMessage(plugin.getMessages().applyPrefix("[Debug]: " + msg));
         }

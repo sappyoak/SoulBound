@@ -1,11 +1,6 @@
 # The Lore that will be added to the soulbound item. %username% placeholder replaced with target username
 loreText: "&9Soul bound to %username%"
 
-# Sounds and Effects need to match the exact same values of the Bukkit Sound enum and Particle enum. 
-bindSuccessEffect: "SPELL_WITCH"
-bindSuccessSound: "ENTITY_ILLUSIONER_PREPARE_MIRROR"
-clickDeniedSound: "BLOCK_NOTE_BLOCK_BASS"
-
 debug: false
 
 # Messages | use '&' for color codes

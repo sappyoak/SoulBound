@@ -1,8 +1,11 @@
 package com.sappyoak.soulbound.binder;
 
+import java.util.ArrayList;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.sappyoak.soulbound.SoulBound;
 import com.sappyoak.soulbound.config.Permissions;
@@ -23,7 +26,13 @@ public final class Binder {
     }
 
     public AccessLevel getAccessLevel(ItemStack item, Player player) {
-        if (isBoundToGroup(item)) {
+        AccessLevel access = _getAccessLevel(item, player);
+        plugin.getDebugger().log("Player " + player.getName() + " has access: " + access.get() + " to item: " + item);
+        return access;
+    }
+
+    private AccessLevel _getAccessLevel(ItemStack item, Player player) {
+        if (isBoundToPlayer(item)) {
             String id = getBoundPlayerId(item);
             if (id.equals(player.getUniqueId().toString())) {
                 return AccessLevel.ALLOW;
@@ -57,6 +66,17 @@ public final class Binder {
     }
 
     public ItemStack bindToPlayer(ItemStack item, Player player) {
+        ItemMeta meta = item.getItemMeta();
+        ArrayList<String> newLore = new ArrayList<>();
+
+        if (meta.hasLore()) {
+            newLore.addAll(meta.getLore());
+        }
+
+        newLore.add(plugin.getMessages().getLoreText().replaceAll("%username%", player.getName()));
+        meta.setLore(newLore);
+        item.setItemMeta(meta);
+
         return Container.writeContainerTag(item, player.getUniqueId().toString(), bindKey);
     }
 

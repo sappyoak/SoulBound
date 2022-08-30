@@ -35,17 +35,20 @@ public class ItemProtectionListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player player) {
             Binder binder = plugin.getBinder();
-            
-            if (binder.canIgnoreBinding(player)) {
-                return;
-            } 
+
+          //  if (binder.canIgnoreBinding(player)) {
+            //    return;
+            //} 
+
+            plugin.getDebugger().log("InventoryHolder: " + event.getClickedInventory().getHolder());
 
             if (
                 event.getCurrentItem() != null && event.getCurrentItem().hasItemMeta() &&
                 event.getClickedInventory() != null && event.getClickedInventory().getHolder() != null &&
                 !event.getClickedInventory().getHolder().equals(player)
             ) {
-                AccessLevel access = binder.getAccessLevel(event.getCurrentItem(), player);
+                ItemStack item = event.getCurrentItem();
+                AccessLevel access = binder.getAccessLevel(item, player);
                 if (access != AccessLevel.ALLOW) {
                     event.setCancelled(true);
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 1F);

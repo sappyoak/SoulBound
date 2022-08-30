@@ -2,13 +2,14 @@ package com.sappyoak.soulbound.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class BindCommand implements CommandInterface {
     private CommandExecutor executor;
@@ -42,7 +43,10 @@ public class BindCommand implements CommandInterface {
         }
 
         executor.getPlugin().getBinder().bindToPlayer(item, target);
-        // play effect
+        
+        player.getWorld().spawnParticle(Particle.SPELL_WITCH, player.getLocation().add(0, 1, 0), 30, 0.5, 0.5, 0.5);
+        player.playSound(player.getLocation(), Sound.ENTITY_ILLUSIONER_PREPARE_MIRROR, 1, 2);
+        
         player.sendMessage(executor.getMessages().getBindSuccess());
         target.sendMessage(executor.getMessages().getBindSuccess());
         
