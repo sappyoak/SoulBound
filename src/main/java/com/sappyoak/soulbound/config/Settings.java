@@ -26,6 +26,13 @@ public class Settings {
         return (Boolean) settings.get(Key.DEBUG);
     }
 
+    public void toggleDebug() {
+        boolean update = isDebug() ? false : true;
+        settings.put(Key.DEBUG, update);
+        plugin.getConfig().set(Key.DEBUG.get(), update);
+        plugin.saveConfig();
+    }
+
     public enum Key {
         DEBUG("debug");
 

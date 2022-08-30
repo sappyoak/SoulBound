@@ -5,8 +5,7 @@ import java.util.List;
 
 public interface CommandInterface {
     public List<String> getCommandIds();
-    public List<String> getAcceptedPermissions();
-    
+
     public boolean execute(CommandSender sender, String[] args);
 
     public default boolean allowConsoleExecution() {

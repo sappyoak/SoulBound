@@ -21,6 +21,17 @@ public class CommandExecutor {
         this.plugin = plugin;
     }
 
+    public void init() {
+        registerCommand(new DebugCommand(this));
+        registerCommand(new ReloadCommand(this));
+    }
+
+    public void registerCommand(CommandInterface command) {
+        for (String commandId : command.getCommandIds()) {
+            commandMap.put(commandId.toLowerCase(), command);
+        }
+    }
+
     public CommandInterface getCommand(String commandId) {
         return commandMap.get(commandId);
     }
