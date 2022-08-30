@@ -16,9 +16,11 @@ import com.sappyoak.soulbound.config.Permissions;
 
 public class CommandExecutor {
     private final Map<String, CommandInterface> commandMap = new HashMap<>();
+    private final CommandCompleter completer;
     private final SoulBound plugin;
 
     public CommandExecutor(SoulBound plugin) {
+        this.completer = new CommandCompleter();
         this.plugin = plugin;
     }
 
@@ -32,6 +34,7 @@ public class CommandExecutor {
     public void registerCommand(CommandInterface command) {
         for (String commandId : command.getCommandIds()) {
             commandMap.put(commandId.toLowerCase(), command);
+            plugin.getCommand(commandId).setTabCompleter(completer);
         }
     }
 
