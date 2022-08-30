@@ -29,7 +29,7 @@ public class DebugCommand implements CommandInterface {
         boolean isDebug = executor.getPlugin().getSettings().isDebug();
         
         if (args.length == 0) {
-            sender.sendMessage(executor.getPlugin().getMessages().applyPrefix(" Debug mode has been set to: " + !isDebug));
+            sender.sendMessage(executor.getMessages().applyPrefix(" Debug mode has been set to: " + !isDebug));
             executor.getPlugin().getSettings().setDebug(!isDebug);
             return true;
         }
@@ -37,7 +37,7 @@ public class DebugCommand implements CommandInterface {
         Player player = Bukkit.getPlayer(args[0]);
         
         if (player == null) {
-            sender.sendMessage(executor.getPlugin().getMessages().applyPrefix(ChatColor.RED + " That is not a valid player"));
+            sender.sendMessage(executor.getMessages().applyPrefix(ChatColor.RED + " That is not a valid player"));
             return false;
         }
 
@@ -45,12 +45,12 @@ public class DebugCommand implements CommandInterface {
         
         if (debugger.hasPlayerDebug(player)) {
             debugger.removePlayerDebug(player);
-            sender.sendMessage(executor.getPlugin().getMessages().applyPrefix("Removing player: " + player.getName() + " from debug list"));
+            sender.sendMessage(executor.getMessages().applyPrefix("Removing player: " + player.getName() + " from debug list"));
             return true;
         }
 
         debugger.addPlayerDebug(player);
-        sender.sendMessage(executor.getPlugin().getMessages().applyPrefix("Added player: " + player.getName() + " to debug list"));
+        sender.sendMessage(executor.getMessages().applyPrefix("Added player: " + player.getName() + " to debug list"));
         return true;
     }
 }

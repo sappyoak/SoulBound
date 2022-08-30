@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 
 import com.sappyoak.soulbound.SoulBound;
+import com.sappyoak.soulbound.config.Messages;
 import com.sappyoak.soulbound.config.Permissions;
 
 public class CommandExecutor {
@@ -22,6 +23,8 @@ public class CommandExecutor {
     }
 
     public void init() {
+        registerCommand(new BindCommand(this));
+        registerCommand(new UnbindCommand(this));
         registerCommand(new DebugCommand(this));
         registerCommand(new ReloadCommand(this));
     }
@@ -38,6 +41,10 @@ public class CommandExecutor {
 
     public SoulBound getPlugin() {
         return plugin;
+    }
+
+    public Messages getMessages() {
+        return plugin.getMessages();
     }
 
     public boolean execute(CommandSender sender, Command cmd, String[] args) {
