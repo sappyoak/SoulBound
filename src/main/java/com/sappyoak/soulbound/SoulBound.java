@@ -13,6 +13,7 @@ import com.sappyoak.soulbound.listeners.ItemProtectionListener;
 public class SoulBound extends JavaPlugin {
     private Binder binder;
     private CommandExecutor commandExecutor;
+    private Debugger debugger;
     private Messages messages;
     private Settings settings;
 
@@ -20,10 +21,12 @@ public class SoulBound extends JavaPlugin {
     public void onEnable() {
         binder = new Binder(this);
         commandExecutor = new CommandExecutor(this);
+        debugger = new Debugger(this);
         messages = new Messages(this);
         settings = new Settings(this);
 
         initializeConfiguration();
+        initializeModules();
         setupListeners();
     }
 
@@ -51,6 +54,11 @@ public class SoulBound extends JavaPlugin {
 
         settings.load();
         messages.load();
+    }
+
+    public void initializeModules() {
+        debugger.init();
+        commandExecutor.init();
     }
 
     public void setupListeners() {
