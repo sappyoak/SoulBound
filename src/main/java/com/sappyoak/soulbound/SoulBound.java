@@ -39,6 +39,10 @@ public class SoulBound extends JavaPlugin {
         return binder;
     }
 
+    public Debugger getDebugger() {
+        return debugger;
+    }
+    
     public Messages getMessages() {
         return messages;
     }

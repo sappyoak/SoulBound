@@ -50,7 +50,7 @@ public class Debugger {
             final FileHandler handler = new FileHandler(logFile.getAbsolutePath());
             handler.setFormatter(LogFormatter.create());
             logger.addHandler(handler);
-            
+
         } catch (final IOException | SecurityException err) {
             plugin.getLogger().log(Level.SEVERE, "Error initializing debugger", err);
         }
@@ -60,8 +60,27 @@ public class Debugger {
         playersEnabledFor.put(player.getUniqueId(), player);
     }
 
+    public boolean hasPlayerDebug(Player player) {
+        return playersEnabledFor.containsKey(player.getUniqueId());
+    }
+    
     public void removePlayerDebug(Player player) {
         playersEnabledFor.remove(player.getUniqueId());
+    }
+
+    public void log(String msg) {
+        log(Level.INFO, msg);
+    }
+
+    public void log(String msg, Throwable exception) {
+        if (!plugin.getSettings().isDebug()) {
+            return;
+        }
+        
+        logger.log(Level.SEVERE, msg, exception);
+        for (Player player : playersEnabledFor.values()) {
+            player.sendMessage(plugin.getMessages().applyPrefix("[Debug]: " + msg));
+        }        
     }
 
     public void log(Level level, String msg) {
