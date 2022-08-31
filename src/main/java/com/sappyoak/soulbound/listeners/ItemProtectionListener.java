@@ -33,12 +33,13 @@ public class ItemProtectionListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getWhoClicked() instanceof Player player) {
+        if (event.getWhoClicked() instanceof Player) {
+            Player player = (Player) event.getWhoClicked();
             Binder binder = plugin.getBinder();
 
-          //  if (binder.canIgnoreBinding(player)) {
-            //    return;
-            //} 
+           if (binder.canIgnoreBinding(player)) {
+                return;
+            } 
 
             plugin.getDebugger().log("InventoryHolder: " + event.getClickedInventory().getHolder());
 
@@ -74,7 +75,8 @@ public class ItemProtectionListener implements Listener {
 
     @EventHandler
     public void onPickUp(EntityPickupItemEvent event) {
-        if (event.getEntity() instanceof Player player) {
+        if (event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
             if (plugin.getBinder().canIgnoreBinding(player)) {
                 return;
             }
@@ -148,10 +150,11 @@ public class ItemProtectionListener implements Listener {
 
     @EventHandler
     public void onArmorDispense(BlockDispenseArmorEvent event) {
-        if (!(event.getTargetEntity() instanceof Player player)) {
+        if (!(event.getTargetEntity() instanceof Player)) {
             return;
         }
 
+        Player player = (Player) event.getTargetEntity();
         if (plugin.getBinder().canIgnoreBinding(player)) {
             return;
         }
