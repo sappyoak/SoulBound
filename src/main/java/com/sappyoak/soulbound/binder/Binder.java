@@ -1,14 +1,18 @@
 package com.sappyoak.soulbound.binder;
 
-import java.util.ArrayList;
-
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.sappyoak.soulbound.SoulBound;
 import com.sappyoak.soulbound.config.Permissions;
+import com.sappyoak.soulbound.text.TextProvider;
 
 public final class Binder {
     private final NamespacedKey bindKey;
@@ -26,12 +30,6 @@ public final class Binder {
     }
 
     public AccessLevel getAccessLevel(ItemStack item, Player player) {
-        AccessLevel access = _getAccessLevel(item, player);
-        plugin.getDebugger().log("Player " + player.getName() + " has access: " + access.get() + " to item: " + item);
-        return access;
-    }
-
-    private AccessLevel _getAccessLevel(ItemStack item, Player player) {
         if (isBoundToPlayer(item)) {
             String id = getBoundPlayerId(item);
             if (id.equals(player.getUniqueId().toString())) {
@@ -67,14 +65,14 @@ public final class Binder {
 
     public ItemStack bindToPlayer(ItemStack item, Player player) {
         ItemMeta meta = item.getItemMeta();
-        ArrayList<String> newLore = new ArrayList<>();
+        List<Component> newLore = new ArrayList<>();
 
         if (meta.hasLore()) {
-            newLore.addAll(meta.getLore());
+            newLore.addAll(meta.lore());
         }
 
-        newLore.add(plugin.getMessages().getLoreText().replaceAll("%username%", player.getName()));
-        meta.setLore(newLore);
+        newLore.add(TextProvider.getBackingInstance().deserialize(plugin.getMessages().getRawLoreText(), Placeholder.unparsed("username", player.getName())));
+        meta.lore(newLore);
         item.setItemMeta(meta);
 
         return Container.writeContainerTag(item, player.getUniqueId().toString(), bindKey);

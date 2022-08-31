@@ -1,7 +1,6 @@
 package com.sappyoak.soulbound.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -37,7 +36,7 @@ public class DebugCommand implements CommandInterface {
         Player player = Bukkit.getPlayer(args[0]);
         
         if (player == null) {
-            sender.sendMessage(executor.getMessages().applyPrefix(ChatColor.RED + " That is not a valid player"));
+            sender.sendMessage(executor.getMessages().applyPrefix("<red>That is not a valid player"));
             return false;
         }
 

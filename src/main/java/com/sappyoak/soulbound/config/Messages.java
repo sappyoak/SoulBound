@@ -1,16 +1,18 @@
 package com.sappyoak.soulbound.config;
 
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.EnumMap;
 import java.util.Map;
 
 import com.sappyoak.soulbound.SoulBound;
+import com.sappyoak.soulbound.text.TextProvider;
 
 public class Messages {
-    private static final Map<Key, String> messages = new EnumMap<>(Key.class);
+    private static final Map<Key, Component> messages = new EnumMap<>(Key.class);
     private final SoulBound plugin;
+    private String rawLoreText;
 
     public Messages(SoulBound plugin) {
         this.plugin = plugin;
@@ -19,58 +21,66 @@ public class Messages {
     public void load() {
         FileConfiguration config = plugin.getConfig();
         for (Key key : Key.values()) {
-            messages.put(key, colorMessage(config.getString(key.get())));
+            if (key == Key.LORE_TEXT) {
+                rawLoreText = config.getString(key.get());
+            }
+
+            messages.put(key, TextProvider.deserialize(config.getString(key.get())));
         }
     }
 
-    public String getMessage(Key key) {
+    public Component getMessage(Key key) {
         return messages.get(key);
     }
 
-    public String getLoreText() {
+    public Component getLoreText() {
         return getMessage(Key.LORE_TEXT);
     }
 
-    public String applyPrefix(String msg) {
-        return getMessage(Key.PREFIX) + msg;
+    public String getRawLoreText() {
+        return rawLoreText;
+    }
+    
+    public Component applyPrefix(Component msg) {
+        return getMessage(Key.PREFIX).append(msg);
     }
 
-    public String getDeny() {
+    public Component applyPrefix(String msg) {
+        return getMessage(Key.PREFIX).append(TextProvider.deserialize(msg));
+    }
+
+    public Component getDeny() {
         return applyPrefix(getMessage(Key.DENY));
     }
 
-    public String getDenyGroup() {
+    public Component getDenyGroup() {
         return applyPrefix(getMessage(Key.DENY_GROUP));
     }
 
-    public String getEmptyMainhand() {
+    public Component getEmptyMainhand() {
         return applyPrefix(getMessage(Key.EMPTY_MAIN_HAND));
     }
 
-    public String getAlreadyBound() {
+    public Component getAlreadyBound() {
         return applyPrefix(getMessage(Key.ALREADY_BOUND));
     }
 
-    public String getNotBound() {
+    public Component getNotBound() {
         return applyPrefix(getMessage(Key.NOT_BOUND));
     }
 
-    public String getNoSuchPlayer() {
+    public Component getNoSuchPlayer() {
         return applyPrefix(getMessage(Key.NO_SUCH_PLAYER));
     }
 
-    public String getBindSuccess() {
+    public Component getBindSuccess() {
         return applyPrefix(getMessage(Key.SUCCESS));
     }
 
-    public String getUnbindSuccess() {
+    public Component getUnbindSuccess() {
         return applyPrefix(getMessage(Key.SUCCESS_UNBIND));
     }
     
-    public String colorMessage(String str) {
-        return ChatColor.translateAlternateColorCodes('&', str);
-    }
-
     public static enum Key {
         LORE_TEXT("loreText"),
         PREFIX("messages.prefix"),

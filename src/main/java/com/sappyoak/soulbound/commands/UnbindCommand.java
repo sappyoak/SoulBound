@@ -10,6 +10,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 import java.util.List;
 
+import com.sappyoak.soulbound.text.TextProvider;
+
 public class UnbindCommand implements CommandInterface {
     private CommandExecutor executor;
 
@@ -48,25 +50,28 @@ public class UnbindCommand implements CommandInterface {
         ItemStack newItem = executor.getPlugin().getBinder().removeBinds(item);
         target.getInventory().setItemInMainHand(newItem);
         target.sendMessage(executor.getMessages().getUnbindSuccess());
-        // play sound
 
         return true;
     }
 
     private void cleanLore(ItemStack item) {
+        if (!item.hasItemMeta()) {
+            return;
+        }
+
         ItemMeta meta = item.getItemMeta();
-        List<String> lore = meta.getLore();
+        List<String> lore = TextProvider.serializeComponentList(meta.lore());
 
         if (lore != null) {
             for (String line : lore) {
-                if (line.startsWith(executor.getMessages().getLoreText().split("%")[0])) {
+                if (line.startsWith(TextProvider.serialize(executor.getMessages().getLoreText()).split("<username>")[0])) {
                     lore.remove(line);
                     break;
                 }
             }
         }
 
-        meta.setLore(lore);
+        meta.lore(TextProvider.deserializeList(lore));
         item.setItemMeta(meta);
     }
 }

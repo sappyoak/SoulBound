@@ -1,19 +1,26 @@
-# The Lore that will be added to the soulbound item. %username% placeholder replaced with target username
-loreText: "&9Soul bound to %username%"
+# SoulBound uses MiniMessage (https://docs.adventure.kyori.net/minimessage/format.html) for formatting
+# Legacy '&' tags are supported, but if at all possible MiniMessage <> tag formatting should be used.
+#
+# The Lore that will be added to the soul bound item. <username> here is a custom placeholder tag that will be
+# replaced by the player's username
+loreText: "<blue>Soul bound to <username>"
 
 debug: false
 
-# Messages | use '&' for color codes
+# Messages
 messages:
-  prefix: "&8[&bSoul&3Bound&8]&r"
+  # The prefix appended to each message coming from the plugin
+  prefix: "<dark_gray>[<aqua>Soul<dark_aqua>Bound<dark_gray>]<reset>"
 
-  deny: "&9 This item is soul bound to another player"
-  denyGroup: "&9 This item is soul bound"
+  # A player tries to interact with a soul bound item that does not belong to them
+  deny: "<blue> This item is soul bound to another player"
+  # A player tries to interact with a soul bound item that is bound to a group they are not in
+  denyGroup: "<blue> This item is soul bound"
 
   errorEmptyMainHand: "You must be holding an item in your main hand"
   errorAlreadyBound: "This item is already soul bound"
   errorNotBound: "This item is not bound to anyone currently"
   errorNoSuchPlayer: "No such player found online"
 
-  success: "&a Soul bind complete"
-  successUnbind: "&a Soul bind broken"  
+  success: "<green> Soul bind complete"
+  successUnbind: "<green> Soul bind broken"  
