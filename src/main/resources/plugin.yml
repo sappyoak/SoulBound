@@ -7,22 +7,42 @@ description: Bind items so they can only be held and used by a particular player
 
 commands:
   soulbind:
-    usage: soulbind <playerName>
-  sbind:
-    usage: soulbind <playerName>
+    aliases: 
+      - sbind
+    description: Binds the item held in your main hand to the targeted <player>.
+    permission: soulbound.admin
+    permission-message: You don't know the first thing about imprinting someone's soul onto an item... seek greater permissions
+    usage: /soulbind <playerName>
+
   soulunbind:
-    usage: soulunbind <playerName>
-  sunbind:
-    usage: sunbind <playerName>
+    aliases:
+      - sunbind
+    description: Breaks the binding on the item held in the targeted players main hand
+    permission: soulbound.admin
+    permission-message: You lack the might to rend a bound soul from an item... seek greater permissions
+    usage: /soulunbind <playerName>
+
   sb-reload:
-    usage: sb-reload
+    description: Reloads the plugin configuration file
+    permission: soulbound.admin
+    permission-message: You find yourself struggling what it means to reload... seek greater permissions
+    usage: /sb-reload
+
   sb-debug:
-    usage: sb-debug
+    description: Turns on Debug Mode for the plugin. This increases the amount of information that is logged to the console as well as writing a debug file in the SoulBound directory. Optionally supply a <playerName> to send debug output messages to this player
+    permission: soulbound.debug
+    permission-message: You should try an exterminator first... seek greater permissions
+    usage: /sb-debug <?playerName>
 
 permissions:
   soulbound.admin:
     description: Allows a user to bind and unbind items to a character
     default: op
+  
+  soulbound.debug:
+    description: Allows a user to control debug mode and whether they receieve debug messages
+    default: op
+  
   soulbound.bypass:
-    description: Allows a user to bypass the soul bound rules
+    description: Allows a user to bypass the possession rules for soul bound items
     default: op
