@@ -14,7 +14,7 @@ public class CommandCompleter implements TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         List<String> suggestions = new ArrayList<>();
 
-        if (!command.getName().equalsIgnoreCase("sb-reload")) {
+        if (!command.getName().equalsIgnoreCase("sb-reload") && args.length == 1) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 suggestions.add(player.getName());
             }
