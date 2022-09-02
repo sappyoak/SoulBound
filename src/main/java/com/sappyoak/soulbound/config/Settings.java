@@ -1,17 +1,18 @@
 package com.sappyoak.soulbound.config;
 
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.EnumMap;
 import java.util.Map;
-
 import com.sappyoak.soulbound.SoulBound;
 
 public class Settings {
     private final static Map<Key, Object> settings = new EnumMap<>(Key.class);
+
     private SoulBound plugin;
-    
-    public boolean dirty = false;
+    private boolean dirty = false;
+    private BukkitTask saveTask;
 
     public Settings(SoulBound plugin) {
         this.plugin = plugin;
@@ -22,6 +23,13 @@ public class Settings {
         for (Key key : Key.values()) {
             settings.put(key, config.get(key.get()));
         }
+
+        startCheckingForPendingWrites();
+    }
+
+    public void close() {
+        plugin.getServer().getScheduler().cancelTask(saveTask.getTaskId());
+        saveIfDirty();
     }
 
     @SuppressWarnings("unchecked")
@@ -44,7 +52,7 @@ public class Settings {
     public boolean blockEnchant() {
         return get(Key.BLOCK_ENCHANT);
     }
-    
+
     public boolean keepOnDeath() {
         return get(Key.KEEP_ON_DEATH);
     }
@@ -57,6 +65,19 @@ public class Settings {
         settings.put(Key.DEBUG, value);
         plugin.getConfig().set(Key.DEBUG.get(), value);
         dirty = true;
+    }
+
+    private void saveIfDirty() {
+        if (dirty) {
+            plugin.saveConfig();
+            dirty = false;
+        }
+    }
+
+    public void startCheckingForPendingWrites() {
+        saveTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+            saveIfDirty();
+        }, 200, 3600);
     }
 
     public enum Key {

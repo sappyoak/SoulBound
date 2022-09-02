@@ -18,6 +18,11 @@ public class SoulBound extends JavaPlugin {
     public Messages messages;
     public Settings settings;
 
+    public void onDisable() {
+        debugger.disable();
+        settings.close();
+    }
+    
     @Override
     public void onEnable() {
         commandExecutor = new CommandExecutor(this);
@@ -33,18 +38,6 @@ public class SoulBound extends JavaPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         return commandExecutor.execute(sender, cmd, args);
-    }
-
-    public Debugger getDebugger() {
-        return debugger;
-    }
-    
-    public Messages getMessages() {
-        return messages;
-    }
-
-    public Settings getSettings() {
-        return settings;
     }
 
     public void initializeConfiguration() {
