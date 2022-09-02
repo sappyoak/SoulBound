@@ -2,24 +2,24 @@ package com.sappyoak.soulbound;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.sappyoak.soulbound.binder.Binder;
 import com.sappyoak.soulbound.commands.CommandExecutor;
 import com.sappyoak.soulbound.config.Messages;
 import com.sappyoak.soulbound.config.Settings;
+import com.sappyoak.soulbound.listeners.ItemModifyListener;
 import com.sappyoak.soulbound.listeners.ItemProtectionListener;
 
 public class SoulBound extends JavaPlugin {
-    private Binder binder;
-    private CommandExecutor commandExecutor;
-    private Debugger debugger;
-    private Messages messages;
-    private Settings settings;
+    public SoulBoundAPI api = new SoulBoundAPI(this);
+    public CommandExecutor commandExecutor;
+    public Debugger debugger;
+    public Messages messages;
+    public Settings settings;
 
     @Override
     public void onEnable() {
-        binder = new Binder(this);
         commandExecutor = new CommandExecutor(this);
         debugger = new Debugger(this);
         messages = new Messages(this);
@@ -33,10 +33,6 @@ public class SoulBound extends JavaPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         return commandExecutor.execute(sender, cmd, args);
-    }
-
-    public Binder getBinder() {
-        return binder;
     }
 
     public Debugger getDebugger() {
@@ -67,5 +63,10 @@ public class SoulBound extends JavaPlugin {
 
     public void setupListeners() {
         getServer().getPluginManager().registerEvents(new ItemProtectionListener(this), this);
+        getServer().getPluginManager().registerEvents(new ItemModifyListener(this), this);
+    }
+
+    public void publishEvent(Event event) {
+        getServer().getPluginManager().callEvent(event);
     }
 }
