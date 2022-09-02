@@ -5,11 +5,13 @@ import org.bukkit.command.CommandSender;
 import java.util.Arrays;
 import java.util.List;
 
-public class ReloadCommand implements CommandInterface {
-    private CommandExecutor executor;
+import com.sappyoak.soulbound.SoulBound;
 
-    public ReloadCommand(CommandExecutor executor) {
-        this.executor = executor;
+public class ReloadCommand implements CommandInterface {
+    private SoulBound plugin;
+
+    public ReloadCommand(SoulBound plugin) {
+        this.plugin = plugin;
     }
 
     public List<String> getCommandIds() {
@@ -21,8 +23,8 @@ public class ReloadCommand implements CommandInterface {
     }
 
     public boolean execute(CommandSender sender, String[] args) {
-        executor.getPlugin().initializeConfiguration();
-        sender.sendMessage(executor.getPlugin().getMessages().applyPrefix("Reloaded configuration"));
+        plugin.initializeConfiguration();
+        sender.sendMessage(plugin.messages.applyPrefix("<green>Reloaded configuration"));
         return true;
     }
 }

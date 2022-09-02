@@ -25,10 +25,10 @@ public class CommandExecutor {
     }
 
     public void init() {
-        registerCommand(new BindCommand(this));
-        registerCommand(new UnbindCommand(this));
-        registerCommand(new DebugCommand(this));
-        registerCommand(new ReloadCommand(this));
+        registerCommand(new BindCommand(plugin));
+        registerCommand(new UnbindCommand(plugin));
+        registerCommand(new DebugCommand(plugin));
+        registerCommand(new ReloadCommand(plugin));
     }
 
     public void registerCommand(CommandInterface command) {
@@ -42,14 +42,6 @@ public class CommandExecutor {
         return commandMap.get(commandId);
     }
 
-    public SoulBound getPlugin() {
-        return plugin;
-    }
-
-    public Messages getMessages() {
-        return plugin.getMessages();
-    }
-
     public boolean execute(CommandSender sender, Command cmd, String[] args) {
         CommandInterface command = getCommand(cmd.getName().toLowerCase());
         if (command == null) {
@@ -61,11 +53,6 @@ public class CommandExecutor {
         } else if (!command.allowConsoleExecution()) {
             sender.sendMessage(ChatColor.RED + " Only players can execute this command");
             return true;
-        }
-
-        if (!sender.hasPermission(Permissions.ADMIN)) {
-            sender.sendMessage(ChatColor.RED + "You do not have the permissions to execute that command");
-            return false;
         }
 
         try {

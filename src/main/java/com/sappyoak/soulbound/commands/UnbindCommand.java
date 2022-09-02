@@ -2,21 +2,21 @@ package com.sappyoak.soulbound.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 import java.util.List;
 
-import com.sappyoak.soulbound.text.TextProvider;
+import com.sappyoak.soulbound.SoulBound;
 
 public class UnbindCommand implements CommandInterface {
-    private CommandExecutor executor;
+    private SoulBound plugin;
 
-    public UnbindCommand(CommandExecutor executor) {
-        this.executor = executor;
+    public UnbindCommand(SoulBound plugin) {
+        this.plugin = plugin;
     }
 
     public List<String> getCommandIds() {
@@ -26,52 +26,41 @@ public class UnbindCommand implements CommandInterface {
     public boolean execute(CommandSender sender, String[] args) {
         Player player = (Player) sender;
         
-        Player target = Bukkit.getPlayer(args[0]);
+        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         if (target == null) {
-            player.sendMessage(executor.getMessages().getNoSuchPlayer());
+            player.sendMessage(plugin.messages.noSuchPlayer());
+            return false;
+        }
+
+        if (!target.isOnline()) {
+            player.sendMessage(plugin.messages.applyPrefix("Player " + target.getName() + " is not online right now"));
             return true;
         }
 
-        if (target.getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
-            target.sendMessage(executor.getMessages().getEmptyMainhand());
-            player.sendMessage(executor.getMessages().applyPrefix(" Player " + target.getName() + " has nothing in their main hand"));
+        Player targetPlayer = target.getPlayer();
+        boolean isTargetExecutor = targetPlayer.getUniqueId() == player.getUniqueId();
+        ItemStack item = targetPlayer.getInventory().getItemInMainHand();
+
+        if (item.getType().equals(Material.AIR)) {
+            targetPlayer.sendMessage(plugin.messages.emptyMainhand());
+            if (!isTargetExecutor) {
+                player.sendMessage(plugin.messages.applyPrefix("Player " + targetPlayer.getName() + " has nothing in their main hand"));
+            }
             return true;
         }
 
-        ItemStack item = target.getInventory().getItemInMainHand();
-        if (!executor.getPlugin().getBinder().isBound(item)) {
-            target.sendMessage(executor.getMessages().getNotBound());
-            player.sendMessage(executor.getMessages().getNotBound());
+        if (!plugin.api.isItemSoulBound(item)) {
+            targetPlayer.sendMessage(plugin.messages.notBound());
+            if (!isTargetExecutor) {
+                player.sendMessage(plugin.messages.notBound());
+            }
             return true;
         }
 
-        cleanLore(item);
-
-        ItemStack newItem = executor.getPlugin().getBinder().removeBinds(item);
-        target.getInventory().setItemInMainHand(newItem);
-        target.sendMessage(executor.getMessages().getUnbindSuccess());
+        ItemStack newItem = plugin.api.removeItemBinding(item);
+        targetPlayer.getInventory().setItemInMainHand(newItem);
+        targetPlayer.sendMessage(plugin.messages.unbindSuccess());
 
         return true;
-    }
-
-    private void cleanLore(ItemStack item) {
-        if (!item.hasItemMeta()) {
-            return;
-        }
-
-        ItemMeta meta = item.getItemMeta();
-        List<String> lore = TextProvider.serializeComponentList(meta.lore());
-
-        if (lore != null) {
-            for (String line : lore) {
-                if (line.startsWith(TextProvider.serialize(executor.getMessages().getLoreText()).split("<username>")[0])) {
-                    lore.remove(line);
-                    break;
-                }
-            }
-        }
-
-        meta.lore(TextProvider.deserializeList(lore));
-        item.setItemMeta(meta);
     }
 }

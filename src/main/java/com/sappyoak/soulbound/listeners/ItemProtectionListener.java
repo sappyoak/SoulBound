@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import com.sappyoak.soulbound.SoulBound;
-import com.sappyoak.soulbound.binder.AccessLevel;
-import com.sappyoak.soulbound.binder.Binder;
+import com.sappyoak.soulbound.SoulBoundAPI;
+import com.sappyoak.soulbound.config.Permissions;
 
 public class ItemProtectionListener implements Listener {
     private final Map<UUID, Map<Integer, ItemStack>> deathItems = new HashMap<>();
@@ -35,25 +35,24 @@ public class ItemProtectionListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player) {
             Player player = (Player) event.getWhoClicked();
-            Binder binder = plugin.getBinder();
 
-           if (binder.canIgnoreBinding(player)) {
+            if (Permissions.canBypassBinding(player)) {
                 return;
-            } 
+            }
 
-            plugin.getDebugger().log("InventoryHolder: " + event.getClickedInventory().getHolder());
+            //plugin.getDebugger().log("InventoryHolder: " + event.getClickedInventory().getHolder());
 
             if (
                 event.getCurrentItem() != null && event.getCurrentItem().hasItemMeta() &&
                 event.getClickedInventory() != null && event.getClickedInventory().getHolder() != null &&
                 !event.getClickedInventory().getHolder().equals(player)
             ) {
-                ItemStack item = event.getCurrentItem();
-                AccessLevel access = binder.getAccessLevel(item, player);
-                if (access != AccessLevel.ALLOW) {
+
+                SoulBoundAPI.ItemAccess access = plugin.api.attemptAccess(event.getCurrentItem(), player);
+                if (!access.allowed()) {
                     event.setCancelled(true);
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 1F);
-                    player.sendMessage(access == AccessLevel.DENY_GROUP ? plugin.getMessages().getDenyGroup() : plugin.getMessages().getDeny());
+                    player.sendMessage(access.key() == "deny-group" ? plugin.messages.denyGroup() : plugin.messages.denyPlayer());
                 }
             }
         }
@@ -62,13 +61,12 @@ public class ItemProtectionListener implements Listener {
     @EventHandler
     public void onPlayerPickupAttempt(PlayerAttemptPickupItemEvent event) {
         Player player = event.getPlayer();
-        ItemStack item = event.getItem().getItemStack();
-        
-        if (plugin.getBinder().canIgnoreBinding(player)) {
+
+        if (Permissions.canBypassBinding(player)) {
             return;
         }
 
-        if (plugin.getBinder().getAccessLevel(item, player) != AccessLevel.ALLOW) {
+        if (!(plugin.api.attemptAccess(event.getItem().getItemStack(), player).allowed())) {
             event.setCancelled(true);
         }
     }
@@ -77,11 +75,11 @@ public class ItemProtectionListener implements Listener {
     public void onPickUp(EntityPickupItemEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            if (plugin.getBinder().canIgnoreBinding(player)) {
+            if (Permissions.canBypassBinding(player)) {
                 return;
             }
 
-            if (plugin.getBinder().getAccessLevel(event.getItem().getItemStack(), player) != AccessLevel.ALLOW) {
+            if (!(plugin.api.attemptAccess(event.getItem().getItemStack(), player).allowed())) {
                 event.setCancelled(true);
             }
         }
@@ -96,9 +94,9 @@ public class ItemProtectionListener implements Listener {
 
             for (int i = 0; i < inventory.length; i++) {
                 ItemStack item = inventory[i];
-                if (item != null && plugin.getBinder().isBound(item)) {
+                if (item != null && plugin.api.isItemSoulBound(item)) {
                     // Check for invalidly held items
-                    if (plugin.getBinder().getAccessLevel(item, event.getPlayer()) != AccessLevel.ALLOW) {
+                    if (!(plugin.api.attemptAccess(item, event.getPlayer()).allowed())) {
                         event.getDrops().remove(item);
                     } else {
                         boundItems.put(i, item);
@@ -138,12 +136,11 @@ public class ItemProtectionListener implements Listener {
     @EventHandler
     public void onArmorStandManipulate(PlayerArmorStandManipulateEvent event) {
         Player player = event.getPlayer();
-        if (plugin.getBinder().canIgnoreBinding(player)) {
+        if (Permissions.canBypassBinding(player)) {
             return;
         }
 
-        ItemStack item = event.getArmorStandItem();
-        if (item.hasItemMeta() && plugin.getBinder().getAccessLevel(item, player) != AccessLevel.ALLOW) {
+        if (!plugin.api.attemptAccess(event.getArmorStandItem(), player).allowed()) {
             event.setCancelled(true);
         }
     }
@@ -155,12 +152,11 @@ public class ItemProtectionListener implements Listener {
         }
 
         Player player = (Player) event.getTargetEntity();
-        if (plugin.getBinder().canIgnoreBinding(player)) {
+        if (Permissions.canBypassBinding(player)) {
             return;
         }
 
-        ItemStack item = event.getItem();
-        if (plugin.getBinder().isBound(item) && plugin.getBinder().getAccessLevel(item, player) != AccessLevel.ALLOW) {
+        if (!plugin.api.attemptAccess(event.getItem(), player).allowed()) {
             event.setCancelled(true);
         }
     }
