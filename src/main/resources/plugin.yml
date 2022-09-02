@@ -6,33 +6,41 @@ authors: [Sappyoak]
 description: Bind items so they can only be held and used by a particular player
 
 commands:
-  soulbind:
-    aliases: 
-      - sbind
+  sb-debug:
+    description: Turns on Debug Mode for the plugin. This increases the amount of information that is logged to the console as well as writing a debug file in the SoulBound directory. Optionally supply a <playerName> to send debug output messages to this player
+    permission: soulbound.debug
+    permission-message: You should try an exterminator first... seek greater permissions
+    usage: /sb-debug <?playerName>
+
+  sb-group:
+    aliases:
+      - sbg
+    description: Binds the item held in your main hand to players with the permission soulbound.group.<perm>
+    permission: soulbound.admin
+    permission-message: My friend... try running /sb-player and see what happens. Now why would you think it would be any better with multiple souls? 
+    usage: /sb-group <permString>
+
+  sb-player:
+    aliases:
+      - sbp
     description: Binds the item held in your main hand to the targeted <player>.
     permission: soulbound.admin
     permission-message: You don't know the first thing about imprinting someone's soul onto an item... seek greater permissions
-    usage: /soulbind <playerName>
-
-  soulunbind:
-    aliases:
-      - sunbind
-    description: Breaks the binding on the item held in the targeted players main hand
-    permission: soulbound.admin
-    permission-message: You lack the might to rend a bound soul from an item... seek greater permissions
-    usage: /soulunbind <playerName>
+    usage: /sb-player <playerName>
 
   sb-reload:
     description: Reloads the plugin configuration file
     permission: soulbound.admin
     permission-message: You find yourself struggling what it means to reload... seek greater permissions
     usage: /sb-reload
-
-  sb-debug:
-    description: Turns on Debug Mode for the plugin. This increases the amount of information that is logged to the console as well as writing a debug file in the SoulBound directory. Optionally supply a <playerName> to send debug output messages to this player
-    permission: soulbound.debug
-    permission-message: You should try an exterminator first... seek greater permissions
-    usage: /sb-debug <?playerName>
+  
+  sb-unbind:
+    aliases:
+      - sbu
+    description: Breaks the binding on the item held in the targeted players main hand
+    permission: soulbound.admin
+    permission-message: You lack the might to rend a bound soul from an item... seek greater permissions
+    usage: /sb-unbind <playerName>
 
 permissions:
   soulbound.admin:
@@ -43,6 +51,27 @@ permissions:
     description: Allows a user to control debug mode and whether they receieve debug messages
     default: op
   
-  soulbound.bypass:
-    description: Allows a user to bypass the possession rules for soul bound items
+  soulbound.bypass.*:
+    description: Allows a user to bypass the rules for soul bound items
     default: op
+    children:
+      soulbound.bypass.anvil: true
+      soulbound.bypass.craft: true
+      soulbound.bypass.enchant: true
+      soulbound.bypass.posses: true
+  
+  soulbound.bypass.anvil:
+    description: Allows a user to bypass the rule for using soul bound items on an anvil
+    default: false
+  
+  soulbound.bypass.craft:
+    description: Allows a user to bypass the rule for crafting with soul bound items
+    default: false
+  
+  soulbound.bypass.enchant:
+    description: Allows a user to bypass the rule for enchanting with soul bound items
+    default: false
+  
+  soulbound.bypass.posses:
+    description: Allows a user to bypass the rules for holding/possesing the bound items of others
+    default: false

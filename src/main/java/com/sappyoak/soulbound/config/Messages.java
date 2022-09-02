@@ -9,10 +9,9 @@ import java.util.Map;
 import com.sappyoak.soulbound.SoulBound;
 import com.sappyoak.soulbound.text.TextProvider;
 
-public class Messages {
+public final class Messages {
     private static final Map<Key, Component> messages = new EnumMap<>(Key.class);
     private final SoulBound plugin;
-    private String rawLoreText;
 
     public Messages(SoulBound plugin) {
         this.plugin = plugin;
@@ -21,10 +20,6 @@ public class Messages {
     public void load() {
         FileConfiguration config = plugin.getConfig();
         for (Key key : Key.values()) {
-            if (key == Key.LORE_TEXT) {
-                rawLoreText = config.getString(key.get());
-            }
-
             messages.put(key, TextProvider.deserialize(config.getString(key.get())));
         }
     }
@@ -33,14 +28,6 @@ public class Messages {
         return messages.get(key);
     }
 
-    public Component getLoreText() {
-        return getMessage(Key.LORE_TEXT);
-    }
-
-    public String getRawLoreText() {
-        return rawLoreText;
-    }
-    
     public Component applyPrefix(Component msg) {
         return getMessage(Key.PREFIX).append(msg);
     }
@@ -49,43 +36,57 @@ public class Messages {
         return getMessage(Key.PREFIX).append(TextProvider.deserialize(msg));
     }
 
-    public Component getDeny() {
-        return applyPrefix(getMessage(Key.DENY));
+    public Component denyAnvil() {
+        return applyPrefix(getMessage(Key.DENY_ANVIL));
     }
 
-    public Component getDenyGroup() {
+    public Component denyCraft() {
+        return applyPrefix(getMessage(Key.DENY_CRAFT));
+    }
+
+    public Component denyEnchant() {
+        return applyPrefix(getMessage(Key.DENY_ENCHANT));
+    }
+    
+    public Component denyGroup() {
         return applyPrefix(getMessage(Key.DENY_GROUP));
     }
 
-    public Component getEmptyMainhand() {
+    public Component denyPlayer() {
+        return applyPrefix(getMessage(Key.DENY_PLAYER));
+    }
+
+    public Component emptyMainhand() {
         return applyPrefix(getMessage(Key.EMPTY_MAIN_HAND));
     }
 
-    public Component getAlreadyBound() {
+    public Component alreadyBound() {
         return applyPrefix(getMessage(Key.ALREADY_BOUND));
     }
 
-    public Component getNotBound() {
+    public Component notBound() {
         return applyPrefix(getMessage(Key.NOT_BOUND));
     }
 
-    public Component getNoSuchPlayer() {
+    public Component noSuchPlayer() {
         return applyPrefix(getMessage(Key.NO_SUCH_PLAYER));
     }
 
-    public Component getBindSuccess() {
+    public Component bindSuccess() {
         return applyPrefix(getMessage(Key.SUCCESS));
     }
 
-    public Component getUnbindSuccess() {
+    public Component unbindSuccess() {
         return applyPrefix(getMessage(Key.SUCCESS_UNBIND));
     }
     
     public static enum Key {
-        LORE_TEXT("loreText"),
         PREFIX("messages.prefix"),
-        DENY("messages.deny"),
+        DENY_ANVIL("messages.denyAnvil"),
+        DENY_CRAFT("messages.denyCraft"),
+        DENY_ENCHANT("messages.denyEnchant"),
         DENY_GROUP("messages.denyGroup"),
+        DENY_PLAYER("messages.denyPlayer"),
         EMPTY_MAIN_HAND("messages.errorEmptyMainHand"),
         ALREADY_BOUND("messages.errorAlreadyBound"),
         NOT_BOUND("messages.errorNotBound"),
