@@ -31,6 +31,7 @@ public class DebugCommand implements CommandInterface {
         
         if (args.length == 0) {
             plugin.settings.debug(!isDebug);
+            toggleDebugModule();
             sender.sendMessage(plugin.messages.applyPrefix(" Debug mode has been set to: " + plugin.settings.debug()));
             return true;
         }
@@ -57,6 +58,7 @@ public class DebugCommand implements CommandInterface {
         if (!plugin.settings.debug()) {
             sender.sendMessage(plugin.messages.applyPrefix("Attempting to add player to debug list without it being enabled. Flipping debug to enabled now..."));
             plugin.settings.debug(true);
+            toggleDebugModule();
         }
 
         plugin.debugger.addPlayerDebug(onlinePlayer);
@@ -76,5 +78,13 @@ public class DebugCommand implements CommandInterface {
         onlinePlayer.sendMessage(messageForTarget);
 
         return true;
+    }
+
+    private void toggleDebugModule() {
+        if (plugin.settings.debug()) {
+            plugin.debugger.enable();
+        } else {
+            plugin.debugger.disable();
+        }
     }
 }
