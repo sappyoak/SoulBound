@@ -86,12 +86,12 @@ jobs:
                 
                 secondDigit++
                 versionString = `${firstDigit}.${secondDigit}-nightly`
-              } catch (error) {
-                // log error
               }
-
-              return versionString
+            } catch (err) {
+              // log error
             }
+
+            return versionString
         
       - name: Upload Project assets
         uses: actions/upload-artifact@v3
