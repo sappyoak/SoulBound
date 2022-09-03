@@ -23,8 +23,8 @@ jobs:
         uses: actions/setup-java@v3.4.1
         with:
           java-version: 17
-          distibution: zulu
-          cache: maven
+          distibution: 'zulu'
+          cache: 'maven'
 
       - name: Parse Version from tags
         uses: actions/github-script@v6
