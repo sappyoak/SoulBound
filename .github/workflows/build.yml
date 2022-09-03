@@ -88,7 +88,7 @@ jobs:
                 versionString = `${firstDigit}.${secondDigit}-nightly`
               }
             } catch (err) {
-              // log error
+              core.error('Had issues collecting the previous artifacts', err)
             }
 
             return versionString
