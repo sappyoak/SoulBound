@@ -13,6 +13,7 @@ concurrency:
 
 jobs:
   release:
+    if: contains(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
       - name: Checking out project
