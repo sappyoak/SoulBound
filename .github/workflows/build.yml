@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  is_release: ${{ contains(github.ref, "/release") }}
+  is_release: ${{ contains(github.ref, 'release') }}
 
 jobs:
   build:
