@@ -19,6 +19,11 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+/**
+ * Provides increased logging surface to what it available normally from Bukkit logger
+ * since the server will not log messages below INFO. Instead this allows for the generation 
+ * of log files of any level as well as lazy-evaluation of message arguments and sending messages to players.
+ */
 public final class Debugger {
     private final static Map<UUID, Player> playersEnabledFor = new HashMap<>(); 
     private final SoulBound plugin;
@@ -29,7 +34,7 @@ public final class Debugger {
     public Debugger(SoulBound plugin) {
         this.plugin = plugin;
     }
-
+    
     public void enable() {
         this.enabled = true;
         this.init();
@@ -46,10 +51,6 @@ public final class Debugger {
             }
             
             logger = null;
-        }
-
-        for (final Handler handler : logger.getHandlers()) {
-            logger.removeHandler(handler);
         }
 
         playersEnabledFor.clear();

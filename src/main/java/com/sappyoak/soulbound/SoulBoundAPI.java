@@ -6,7 +6,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
@@ -15,6 +14,10 @@ import java.util.Optional;
 
 import com.sappyoak.soulbound.config.Permissions;
 import com.sappyoak.soulbound.text.TextProvider;
+
+/**
+ * The main API logic for the binding/unbinding of items in the plugin. 
+ */
 
 public class SoulBoundAPI {
     private final static String GROUP_STRING = "SoulBoundGroup";
@@ -31,6 +34,13 @@ public class SoulBoundAPI {
         this.plugin = plugin;
     }
 
+    /**
+     * 
+     * @param item         - The item to bind
+     * @param targetPlayer - The player the item should be bound to
+     * @param invoker      - The player invoking the command
+     * @return             - The updated bound item
+     */
     public ItemStack bindItemToPlayer(ItemStack item, OfflinePlayer targetPlayer, Player invoker) {
         ItemMeta meta = setBoundItemMeta(
             item,
@@ -42,6 +52,13 @@ public class SoulBoundAPI {
         return item;
     }
 
+    /**
+     * 
+     * @param item          - The item to be bound
+     * @param group         - The Permission label for the group
+     * @param holdingPlayer - The player holding the item to be bound
+     * @return              - The updated bound item
+     */
     public ItemStack bindItemToGroup(ItemStack item, String group, Player holdingPlayer) {
         String groupPerm = Permissions.createGroupPermission(group);
         ItemMeta meta = setBoundItemMeta(item, groupKey, groupPerm, groupPerm);
@@ -49,6 +66,12 @@ public class SoulBoundAPI {
         return item;
     }
 
+    /**
+     * This method works for both groupbinds as well as player binds
+     * 
+     * @param item - The item to remove the bindings from
+     * @return     - The item with the binds removed
+     */
     public ItemStack removeItemBinding(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
 
@@ -69,6 +92,15 @@ public class SoulBoundAPI {
         return item;
     }
 
+    /**
+     * This method is called by the listeners when events happen to determine if a
+     * player should be able to interact with the item depending on if it is 
+     * bound or not
+     * 
+     * @param item    - The item being accessed
+     * @param player  - The player attempting to access the item
+     * @return        - {@link SoulBoundAPI.ItemAccess} value with whether the player is allowed or denied 
+     */
     public ItemAccess attemptAccess(ItemStack item, Player player) {
         Optional<String> playerTag = getBoundPlayerTag(item);
         if (playerTag.isPresent()) {
@@ -89,17 +121,33 @@ public class SoulBoundAPI {
         return ItemAccess.ALLOW;
     }
 
+    /**
+     * 
+     * @param item - The item to check
+     * @return     - A boolean whether the item has a player-bind or a group-bind
+     */
     public boolean isItemSoulBound(ItemStack item) {
         return getBoundPlayerTag(item).isPresent() || getBoundGroupTag(item).isPresent();
     }
 
+    /**
+     * 
+     * @param item - The item to get tag from
+     * @return     - an Optional<String> containing the tag
+     */
     public Optional<String> getBoundGroupTag(ItemStack item) {
         return getBoundItemTag(item, groupKey);
     }
 
+    /**
+     * 
+     * @param item - The item to get tag from
+     * @return     - an Optional<String> containing the tag
+     */
     public Optional<String> getBoundPlayerTag(ItemStack item) {
         return getBoundItemTag(item, playerKey);
     }
+
 
     private ItemMeta setBoundItemMeta(ItemStack item, NamespacedKey key, String loreReplacement, String persistedValue) {
         ItemMeta meta = item.getItemMeta();
@@ -134,6 +182,9 @@ public class SoulBoundAPI {
         return Optional.ofNullable(tag);
     }
 
+    /**
+     * An enum containing the different access states available for an item
+     */
     public static enum ItemAccess {
         ALLOW("allow", true),
         DENY_GROUP("deny-group", false),
