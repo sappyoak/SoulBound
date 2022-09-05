@@ -20,6 +20,7 @@ public class SoulBound extends JavaPlugin {
     public Settings settings;
 
     private MetricsWrapper metrics;
+    private UpdateChecker updater;
 
     public void onDisable() {
         debugger.disable();
@@ -33,10 +34,15 @@ public class SoulBound extends JavaPlugin {
         messages = new Messages(this);
         settings = new Settings(this);
         metrics = new MetricsWrapper(this, 16304);
-        
+        updater = new UpdateChecker(this);
+
         initializeConfiguration();
         initializeModules();
         setupListeners();
+        
+        getServer().getScheduler().runTaskAsynchronously(this, () -> {
+            updater.check();
+        });
     }
 
     @Override
