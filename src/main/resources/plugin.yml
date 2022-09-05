@@ -1,5 +1,5 @@
 name: SoulBound
-version: ${project.version}
+version: ${version}
 main: com.sappyoak.soulbound.SoulBound
 api-version: 1.19
 authors: [Sappyoak]
