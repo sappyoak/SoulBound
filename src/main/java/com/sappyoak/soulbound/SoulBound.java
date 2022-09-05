@@ -10,6 +10,7 @@ import com.sappyoak.soulbound.config.Messages;
 import com.sappyoak.soulbound.config.Settings;
 import com.sappyoak.soulbound.listeners.ItemModifyListener;
 import com.sappyoak.soulbound.listeners.ItemProtectionListener;
+import com.sappyoak.soulbound.util.MetricsWrapper;
 
 public class SoulBound extends JavaPlugin {
     public SoulBoundAPI api = new SoulBoundAPI(this);
@@ -17,6 +18,8 @@ public class SoulBound extends JavaPlugin {
     public Debugger debugger;
     public Messages messages;
     public Settings settings;
+
+    private MetricsWrapper metrics;
 
     public void onDisable() {
         debugger.disable();
@@ -29,7 +32,8 @@ public class SoulBound extends JavaPlugin {
         debugger = new Debugger(this);
         messages = new Messages(this);
         settings = new Settings(this);
-
+        metrics = new MetricsWrapper(this, 16304);
+        
         initializeConfiguration();
         initializeModules();
         setupListeners();
@@ -37,6 +41,7 @@ public class SoulBound extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        metrics.markCommand(cmd.getName(), true);
         return commandExecutor.execute(sender, cmd, args);
     }
 
